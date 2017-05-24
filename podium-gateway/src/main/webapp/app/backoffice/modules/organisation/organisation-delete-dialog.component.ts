@@ -16,7 +16,7 @@ import { OrganisationPopupService } from './organisation-popup.service';
 import { OrganisationService } from './organisation.service';
 
 @Component({
-    selector: 'jhi-organisation-delete-dialog',
+    selector: 'pdm-organisation-delete-dialog',
     templateUrl: './organisation-delete-dialog.component.html'
 })
 export class OrganisationDeleteDialogComponent {
@@ -38,8 +38,8 @@ export class OrganisationDeleteDialogComponent {
         this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true });
     }
 
-    confirmDelete (id: number) {
-        this.organisationService.delete(id).subscribe(response => {
+    confirmDelete (uuid: string) {
+        this.organisationService.delete(uuid).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'organisationListModification',
                 content: 'Deleted an organisation'
@@ -51,7 +51,7 @@ export class OrganisationDeleteDialogComponent {
 }
 
 @Component({
-    selector: 'jhi-organisation-delete-popup',
+    selector: 'pdm-organisation-delete-popup',
     template: ''
 })
 export class OrganisationDeletePopupComponent implements OnInit, OnDestroy {

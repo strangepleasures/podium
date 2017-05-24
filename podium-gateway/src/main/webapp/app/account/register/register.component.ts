@@ -7,7 +7,7 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Component, OnInit, Renderer, ElementRef } from '@angular/core';
+import { Component, OnInit, Renderer, ElementRef, AfterViewInit } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService } from 'ng-jhipster';
 import { Register } from './register.service';
@@ -20,7 +20,7 @@ import { Observable } from 'rxjs';
 @Component({
     templateUrl: './register.component.html'
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent implements OnInit, AfterViewInit {
 
     confirmPassword: string;
     error: string;
@@ -69,7 +69,7 @@ export class RegisterComponent implements OnInit {
         });
     }
 
-    openLogin() {
+    public gotoLogin() {
         this.modalRef = this.loginModalService.open();
     }
 

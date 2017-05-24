@@ -461,6 +461,11 @@
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>nl.thehyve.podium</groupId>
+            <artifactId>podium-common</artifactId>
+            <version>0.0.2-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

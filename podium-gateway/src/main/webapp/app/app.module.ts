@@ -1,4 +1,3 @@
-import './vendor.ts';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Ng2Webstorage } from 'ng2-webstorage';
@@ -59,8 +58,8 @@ import { BreadcrumbsModule } from './shared/breadcrumbs/breadcrumbs.module';
     ],
     providers: [
         ProfileService,
-        { provide: Window, useValue: window },
-        { provide: Document, useValue: document },
+        // { provide: Window, useValue: window },
+        // { provide: Document, useValue: document },
         customHttpProvider(),
         PaginationConfig,
         UserRouteAccessService,

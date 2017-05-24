@@ -1,0 +1,46 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "declaration": true,
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "outDir": "target/unbundled-aot",
+        "preserveConstEnums": true,
+        "pretty": true,
+        "skipLibCheck": true,
+        "typeRoots": [ "./node_modules/@types" ],
+        "types": [
+            "node"
+        ],
+        "lib": [
+            "dom",
+            "es2015"
+        ]
+    },
+    "compileOnSave": false,
+    "buildOnSave": false,
+    "files": [
+        "src/main/webapp/app/app.module.ts",
+        "src/main/webapp/app/app.main.aot.ts",
+        "src/main/webapp/app/polyfills.ts",
+        "src/main/webapp/app/vendor.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "src/test",
+        "target/unbundled-aot"
+        //"target/aot"
+    ],
+    "awesomeTypescriptLoaderOptions": {
+        "forkChecker": true,
+        "useWebpackText": true
+    },
+    "angularCompilerOptions": {
+        "genDir": "src/main/webapp/aot",
+        "skipMetadataEmit": true
+    }
+}

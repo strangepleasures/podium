@@ -16,15 +16,27 @@ const webpackMerge = require('webpack-merge');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const ENV = 'dev';
+const WEBPACK_ENV = process.env.WEBPACK_ENV || 'jit';
 const execSync = require('child_process').execSync;
 const fs = require('fs');
 const ddlPath = './target/www/vendor.json';
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 if (!fs.existsSync(ddlPath)) {
     execSync('webpack --config webpack/webpack.vendor.js');
 }
 
-module.exports = webpackMerge(commonConfig({env: ENV}), {
+const envOptions = {
+    env: 'dev',
+    webpack_env: 'jit'
+};
+
+module.exports = webpackMerge(commonConfig(envOptions), {
+    entry: {
+        'polyfills': './src/main/webapp/app/polyfills',
+        'global': './src/main/webapp/content/scss/global.scss',
+        'main': './src/main/webapp/app/app.main'
+    },
     devtool: 'inline-source-map',
     devServer: {
         contentBase: './target/www',
@@ -56,6 +68,11 @@ module.exports = webpackMerge(commonConfig({env: ENV}), {
         }]
     },
     plugins: [
+        new HtmlWebpackPlugin({
+            template: './src/main/webapp/index.html',
+            chunksSortMode: 'dependency',
+            inject: 'body'
+        }),
         new BrowserSyncPlugin({
             host: 'localhost',
             port: 9000,

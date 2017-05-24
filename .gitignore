@@ -19,7 +19,9 @@ npm-debug.log.*
 #####################
 podium-gateway/src/main/webapp/app/**/*.js
 podium-gateway/src/main/webapp/app/**/*.js.map
+podium-gateway/src/main/webapp/aot
 podium-gateway/data
+podium-gateway/rollup.config.js
 podium-uaa/data
 
 ######################

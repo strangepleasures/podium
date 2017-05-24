@@ -12,7 +12,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgbActiveModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { EventManager, AlertService, JhiLanguageService } from 'ng-jhipster';
 import { UploadPopupService } from './upload-dialog.service';
-import { FileUploader } from 'ng2-file-upload';
+import { FileUploader } from 'ng2-file-upload/file-upload/file-uploader.class';
 
 const URL = 'api/upload/';
 
@@ -25,6 +25,7 @@ export class UploadDialogComponent implements OnInit {
 
     authorities: any[];
     isUploading: boolean;
+    hasUploadedFiles: boolean;
 
     public hasDropzoneOver: boolean = false;
     public uploader: FileUploader = new FileUploader({ url: URL });
@@ -61,7 +62,6 @@ export class UploadDialogComponent implements OnInit {
     public fileOverDropzone(e: any): void {
         this.hasDropzoneOver = e;
     }
-
 }
 
 @Component({

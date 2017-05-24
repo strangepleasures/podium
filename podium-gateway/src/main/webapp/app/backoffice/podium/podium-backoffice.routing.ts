@@ -12,7 +12,7 @@ import { RouterModule } from '@angular/router';
 import { PodiumGatewayOrganisationModule } from '../modules/organisation/organisation.module';
 import { PodiumGatewayUserMgmtModule } from '../modules/user-management/user-management.module';
 
-let PODIUM_ROUTES = [
+export const PODIUM_ROUTES = [
     {
         path: 'admin',
         data: {
@@ -29,14 +29,16 @@ let PODIUM_ROUTES = [
                 data: {
                     breadcrumb: 'organisation management'
                 },
-                loadChildren: () => PodiumGatewayOrganisationModule
+                // loadChildren: () => PodiumGatewayOrganisationModule
+                loadChildren: 'app/modules/organisation/organisation.module#PodiumGatewayOrganisationModule'
             },
             {
                 path: 'user-management',
                 data: {
                     breadcrumb: 'user management'
                 },
-                loadChildren: () => PodiumGatewayUserMgmtModule
+                // loadChildren: () => PodiumGatewayUserMgmtModule
+                loadChildren: 'app/modules/user-management/user-management.module#PodiumGatewayUserMgmtModule'
             }
         ]
     }

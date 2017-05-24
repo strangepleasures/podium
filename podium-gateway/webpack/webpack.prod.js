@@ -16,7 +16,12 @@ const Visualizer = require('webpack-visualizer-plugin');
 const ENV = 'prod';
 const path = require('path');
 
-module.exports = webpackMerge(commonConfig({env: ENV}), {
+const envOptions = {
+    env: 'prod',
+    webpack_env: 'jit'
+};
+
+module.exports = webpackMerge(commonConfig(envOptions), {
         devtool: 'source-map',
         output: {
         path: path.resolve('target/www') ,
