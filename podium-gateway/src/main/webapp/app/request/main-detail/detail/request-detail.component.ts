@@ -50,12 +50,15 @@ export class RequestDetailComponent {
 
     setRequest(request) {
         this.request = request;
-        this.requestDetails = request.requestDetail;
-        this.isInRevision = false;
 
-        if (this.isRevisionStatusForRequester(request)) {
-            this.isInRevision = true;
-            this.requestFormService.request = request;
+        if (request) {
+            this.requestDetails = request.requestDetail;
+            this.isInRevision = false;
+
+            if (this.isRevisionStatusForRequester(request)) {
+                this.isInRevision = true;
+                this.requestFormService.request = request;
+            }
         }
     }
 
@@ -98,6 +101,15 @@ export class RequestDetailComponent {
     rejectRequest() {
         this.isUpdating = true;
         return this.confirmStatusUpdateModal(this.request, RequestStatusUpdateAction.Reject);
+    }
+
+    startRequestDelivery() {
+        this.isUpdating = true;
+        this.requestService.startRequestDelivery(this.request.uuid)
+            .subscribe(
+                (res) => this.onSuccess(res),
+                (err) => this.onError(err)
+            );
     }
 
     confirmStatusUpdateModal(request: RequestBase, action: RequestStatusUpdateAction) {

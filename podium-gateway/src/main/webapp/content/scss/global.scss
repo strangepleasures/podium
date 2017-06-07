@@ -414,5 +414,13 @@ typeahead-container {
         text-align: center;
         font-weight: 500;
     }
+
+    &.transparent-bg {
+        background-color: transparent;
+    }
 }
 
+// Wrapper container for actionable components
+.request-action-wrapper {
+    margin-top: 50px;
+}

@@ -38,6 +38,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -81,6 +82,9 @@ public class UserService {
 
     @Autowired
     private ElasticsearchTemplate elasticsearchTemplate;
+
+    @Autowired
+    private EntityManager entityManager;
 
     /**
      * Activate a user by a given key.
@@ -353,6 +357,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthoritiesByLogin(String login) {
         return userRepository.findOneByDeletedIsFalseAndLogin(login).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
@@ -361,6 +366,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public Optional<User> getUserByUuid(UUID uuid) {
         return userRepository.findOneByDeletedIsFalseAndUuid(uuid).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });
@@ -369,6 +375,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User getUserWithAuthorities(Long id) {
         User user = userRepository.findOne(id);
+        entityManager.refresh(user);
         user.getAuthorities().size(); // eagerly load the association
         return user;
     }
@@ -381,6 +388,7 @@ public class UserService {
         User user = null;
         if (optionalUser.isPresent()) {
             user = optionalUser.get();
+            entityManager.refresh(user);
             user.getAuthorities().size(); // eagerly load the association
         }
         return user;
@@ -388,6 +396,7 @@ public class UserService {
 
     public Optional<User> getUserWithAuthoritiesByEmail(String email) {
         return userRepository.findOneByDeletedIsFalseAndEmail(email).map(user -> {
+            entityManager.refresh(user);
             user.getAuthorities().size();
             return user;
         });

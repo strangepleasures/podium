@@ -8,6 +8,8 @@
  * See the file LICENSE in the root of this repository.
  */
 import { AdminConsole } from '../protractor-stories/admin-console';
+import { browser } from 'protractor';
+import { Promise } from 'es6-promise';
 import PersonaDictionary = require("../personas/persona-dictionary")
 import initDataDictionary = require("../data/data-dictionary")
 let { defineSupportCode } = require('cucumber');
@@ -23,14 +25,16 @@ defineSupportCode(function ({ After, Before }) {
         return Promise.all(createUserCalls);
     }
 
-    function setuporganisations(adminConsole: AdminConsole, organisations: string[]) {
+    function setupOrganisations(adminConsole: AdminConsole, organisations: string[]) {
         let DataDictionary = initDataDictionary;
-        let createorganisationsCalls = [];
+        let createOrganisationsCalls = [];
 
         organisations.forEach(function (value) {
-            createorganisationsCalls.push(adminConsole.createorganisation(DataDictionary[value]));
+            createOrganisationsCalls.push(adminConsole.createOrganisation(
+                PersonaDictionary['BBMRI_Admin'],
+                DataDictionary[value]));
         });
-        return Promise.all(createorganisationsCalls);
+        return Promise.all(createOrganisationsCalls);
     }
 
     function setupRequests(adminConsole: AdminConsole, requests: string[]) {
@@ -84,12 +88,15 @@ defineSupportCode(function ({ After, Before }) {
         let organisations = ["VarnameBank", 'SomeBank', 'XBank'];
 
         return adminConsole.cleanDB().then(function () {
-            return Promise.all([
-                setupUsers(adminConsole, userList),
-                setuporganisations(adminConsole, organisations)
-            ]).then(function () {
-                return setupRoles(adminConsole, userList)
+            return setupUsers(adminConsole, userList).then(function () {
+                setupOrganisations(adminConsole, organisations).then(function () {
+                    return setupRoles(adminConsole, userList)
+                })
             })
         });
+    });
+
+    Before(function (scenario): Promise<any> {
+        return browser.sleep(2000);
     });
 });

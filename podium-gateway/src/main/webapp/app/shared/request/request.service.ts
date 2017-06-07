@@ -7,9 +7,9 @@
  * See the file LICENSE in the root of this repository.
  *
  */
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Http, Response, URLSearchParams, BaseRequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable, BehaviorSubject, Subject } from 'rxjs/Rx';
 import { RequestDetail } from './request-detail';
 import { RequestBase } from './request-base';
 import { RequestReviewFeedback } from './request-review-feedback';
@@ -21,7 +21,7 @@ export class RequestService {
     private resourceUrl = 'api/requests';
     private resourceSearchUrl = 'api/_search/requests';
 
-    public onRequestUpdate: EventEmitter<RequestBase> = new EventEmitter<RequestBase>(false);
+    public onRequestUpdate: Subject<RequestBase> = new Subject();
 
     constructor(private http: Http) { }
 
@@ -145,13 +145,17 @@ export class RequestService {
         return this.http.post(`${this.resourceUrl}/${uuid}/reject`, message);
     }
 
+    startRequestDelivery(uuid: string): Observable<Response> {
+        return this.http.get(`${this.resourceUrl}/${uuid}/startDelivery`);
+    }
+
     search(req?: any): Observable<Response> {
         let options = this.createRequestOption(req);
         return this.http.get(this.resourceSearchUrl, options);
     }
 
     public requestUpdateEvent(requestBase: RequestBase) {
-        this.onRequestUpdate.emit(requestBase);
+        this.onRequestUpdate.next(requestBase);
     }
 
     private createRequestOption(req?: any): BaseRequestOptions {

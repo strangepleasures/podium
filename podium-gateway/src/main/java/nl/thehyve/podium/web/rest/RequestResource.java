@@ -10,12 +10,13 @@ package nl.thehyve.podium.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import io.swagger.annotations.ApiParam;
 import nl.thehyve.podium.common.enumeration.RequestStatus;
-import nl.thehyve.podium.common.exceptions.ActionNotAllowedInStatus;
+import nl.thehyve.podium.common.exceptions.ActionNotAllowed;
 import nl.thehyve.podium.common.security.AuthenticatedUser;
 import nl.thehyve.podium.common.security.AuthorityConstants;
 import nl.thehyve.podium.common.security.annotations.*;
 import nl.thehyve.podium.common.service.SecurityService;
 import nl.thehyve.podium.common.service.dto.MessageRepresentation;
+import nl.thehyve.podium.common.service.dto.ReviewFeedbackRepresentation;
 import nl.thehyve.podium.service.RequestService;
 import nl.thehyve.podium.common.service.dto.RequestRepresentation;
 import nl.thehyve.podium.web.rest.util.HeaderUtil;
@@ -95,14 +96,14 @@ public class RequestResource {
      *
      * @param uuid of the request draft
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request
      * @return The list of requestDTOs generated
      */
     @GetMapping("/requests/drafts/{uuid}")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> getDraft(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation request = requestService.findRequestForRequester(user, uuid);
         return new ResponseEntity<>(request, HttpStatus.OK);
@@ -112,7 +113,7 @@ public class RequestResource {
      * Update a request draft
      *
      * @param request the request to be updated
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      * @return RequestRepresentation The updated request draft.
      */
@@ -120,7 +121,7 @@ public class RequestResource {
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> updateDraft(
-        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
+        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests/drafts (user: {})", user);
         RequestRepresentation result = requestService.updateDraft(user, request);
@@ -149,14 +150,14 @@ public class RequestResource {
      *
      * @param uuid of the request draft to be saved
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      * @return The list of requestDTOs generated
      */
     @GetMapping("/requests/drafts/{uuid}/submit")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<List<RequestRepresentation>> submitDraft(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowedInStatus {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/drafts/{}/submit (user: {})", uuid, user);
         List<RequestRepresentation> requests = requestService.submitDraft(user, uuid);
@@ -207,7 +208,7 @@ public class RequestResource {
      * Update a request
      *
      * @param request the request to be updated
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      * @throws URISyntaxException Thrown in case of a malformed URI syntax.
      * @return RequestRepresentation The updated request draft.
      */
@@ -215,7 +216,7 @@ public class RequestResource {
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> updateRevisionRequest(
-        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowedInStatus {
+        @RequestParameter @RequestBody RequestRepresentation request) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("PUT /requests (user: {})", user);
         RequestRepresentation result = requestService.updateRequest(user, request);
@@ -229,14 +230,14 @@ public class RequestResource {
      * @param uuid of the request to be saved
      * @return the updated request representation
      * @throws URISyntaxException Thrown in case of a malformed URI syntax
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/submit")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<RequestRepresentation> submitRevisedRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid
-    ) throws URISyntaxException, ActionNotAllowedInStatus {
+    ) throws URISyntaxException, ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("GET /requests/{}/submit (user: {})", uuid, user);
         RequestRepresentation request = requestService.submitRevision(user, uuid);
@@ -360,13 +361,13 @@ public class RequestResource {
      *
      * @param uuid the uuid of the draft request to delete
      * @return the ResponseEntity with status 200 (OK)
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @DeleteMapping("/requests/drafts/{uuid}")
     @SecuredByRequestOwner
     @Timed
     public ResponseEntity<Void> deleteDraft(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
         AuthenticatedUser user = securityService.getCurrentUser();
         log.debug("REST request to delete Request : {}", uuid);
         requestService.deleteDraft(user, uuid);
@@ -379,13 +380,13 @@ public class RequestResource {
      * @param uuid the uuid of the request to validate
      * @return the ResponseEntity with the validated request representation
      *
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/validate")
     @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestRepresentation> validateRequest(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
         log.debug("REST request to validate request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation requestRepresentation = requestService.validateRequest(user, uuid);
@@ -399,14 +400,14 @@ public class RequestResource {
      * @param message the podium event message representation
      * @return the ResponseEntity with the rejected request representation
      *
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @PostMapping("/requests/{uuid}/reject")
     @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestRepresentation> rejectRequest(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody MessageRepresentation message
-    ) throws ActionNotAllowedInStatus {
+    ) throws ActionNotAllowed {
         log.debug("REST request to reject request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation requestRepresentation = requestService.rejectRequest(user, uuid, message);
@@ -419,13 +420,13 @@ public class RequestResource {
      * @param uuid the uuid of the request to approve
      * @return the ResponseEntity with the approved request representation
      *
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @GetMapping("/requests/{uuid}/approve")
     @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestRepresentation> approveRequest(
-        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowedInStatus {
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid) throws ActionNotAllowed {
         log.debug("REST request to approve request process for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation requestRepresentation = requestService.approveRequest(user, uuid);
@@ -439,17 +440,41 @@ public class RequestResource {
      * @param message the podium event message representation
      * @return the ResponseEntity with the updated request representation
      *
-     * @throws ActionNotAllowedInStatus when a requested action is not available for the status of the Request.
+     * @throws ActionNotAllowed when a requested action is not available for the status of the Request.
      */
     @PostMapping("/requests/{uuid}/requestRevision")
     @SecuredByRequestOrganisationCoordinator
     @Timed
     public ResponseEntity<RequestRepresentation> requestRevision(
         @RequestUuidParameter @PathVariable("uuid") UUID uuid, @RequestBody MessageRepresentation message
-    ) throws ActionNotAllowedInStatus {
+    ) throws ActionNotAllowed {
         log.debug("REST request to apply revision to request details for : {} ", uuid);
         AuthenticatedUser user = securityService.getCurrentUser();
         RequestRepresentation requestRepresentation = requestService.requestRevision(user, uuid, message);
+        return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
+    }
+
+    /**
+     * PUT /requests/:uuid/review : Submit review feedback for a request in review
+     *
+     * @param uuid the uuid of the request to provide the review feedback for
+     * @param feedback the review feedback representation holding the advice and optional message
+     *
+     * @throws ActionNotAllowed
+     */
+    @PutMapping("/requests/{uuid}/review")
+    @SecuredByRequestOrganisationReviewer
+    @Timed
+    public ResponseEntity<RequestRepresentation> reviewRequest(
+        @RequestUuidParameter @PathVariable("uuid") UUID uuid,
+        @RequestBody ReviewFeedbackRepresentation feedback
+    ) throws ActionNotAllowed {
+        log.debug("REST request to provide review feedback advice for request : {}", uuid);
+        AuthenticatedUser user = securityService.getCurrentUser();
+
+        RequestRepresentation requestRepresentation = requestService.findRequest(uuid);
+        requestService.provideReviewFeedback(user, requestRepresentation, feedback);
+
         return new ResponseEntity<>(requestRepresentation, HttpStatus.OK);
     }
 
